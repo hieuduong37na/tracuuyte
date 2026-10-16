@@ -67,6 +67,17 @@ main{max-width:1100px}
 .sh{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);margin:2px 6px 6px}
 .tile{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;text-decoration:none;color:var(--tx)}
 .tile:hover{background:var(--pri2)}.tile b{min-width:64px;color:var(--pri)}.tile span{font-size:.92rem}
+.cols{display:grid;gap:16px;grid-template-columns:minmax(0,3fr) minmax(0,2fr);align-items:start}
+.cols .subs{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.cols .grid{grid-template-columns:1fr}
+@media (max-width:600px){.cols{grid-template-columns:1fr}}
+.grp{margin-bottom:12px}
+.grp>summary.gh{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;margin:0;padding:10px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;font-weight:600;color:var(--tx)}
+.grp>summary.gh::-webkit-details-marker{display:none}
+.grp>summary.gh::before{content:'▸';color:var(--pri)}
+.grp[open]>summary.gh{margin-bottom:10px}
+.grp[open]>summary.gh::before{content:'▾'}
+.grp>summary.gh:hover{border-color:var(--pri)}
 </style>
 </head>
 <body>
@@ -3493,6 +3504,211 @@ Số CMND hoặc thẻ căn cước hoặc số định danh công dân ……�
 <\/script>
 </body>
 </html></script>
+<script type="text/html" id="thuoc-src"><!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tính thời gian truyền dịch & khí dung</title>
+<style>
+:root{--bg:#f3f7f8;--surface:#fff;--ink:#12303a;--muted:#5b7580;--line:#d3e0e4;--accent:#0e7c86;--accent-ink:#fff;--soft:#e2f3f4;--warn:#8a5a00;--warnbg:#fff4d9;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a1e;--surface:#16262c;--ink:#e3f0f3;--muted:#8fa9b2;--line:#294048;--accent:#4cc3cc;--accent-ink:#06262a;--soft:#1b3a40;--warn:#f0c66a;--warnbg:#3a2f12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a1e;--surface:#16262c;--ink:#e3f0f3;--muted:#8fa9b2;--line:#294048;--accent:#4cc3cc;--accent-ink:#06262a;--soft:#1b3a40;--warn:#f0c66a;--warnbg:#3a2f12;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro","Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.35rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+.tabs{display:flex;gap:6px;background:var(--soft);padding:4px;border-radius:12px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:600;padding:10px;border-radius:9px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+label{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
+label:first-child{margin-top:0}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.hint{font-size:.78rem;color:var(--muted);margin-top:3px}
+.result{margin-top:14px;background:var(--soft);border-radius:12px;padding:16px}
+.big{font-size:2rem;font-weight:700;color:var(--accent);line-height:1.2}
+.res-label{font-size:.85rem;color:var(--muted)}
+dl{margin:12px 0 0;display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.95rem}
+dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right}
+.note{margin-top:14px;font-size:.78rem;background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px}
+.err{color:#c0392b;font-size:.9rem}
+h2{font-size:.95rem;color:var(--accent);margin:18px 0 8px}
+h2:first-child{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 12px}
+.grid label{margin:0 0 4px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.wide{grid-column:1/-1}
+[hidden]{display:none!important}
+.btn{margin-top:12px;width:100%;border:0;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;padding:11px;border-radius:10px;cursor:pointer}
+.em-row{margin-bottom:6px;align-items:center}
+.em-row .em-n{flex:0 0 84px}
+.em-row .rm{flex:0 0 44px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;font:inherit;cursor:pointer;padding:9px}
+.ghost{margin-top:2px;width:100%;border:1px dashed var(--accent);background:none;color:var(--accent);font:inherit;font-weight:600;padding:9px;border-radius:9px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<h1>💧 Tính thời gian dùng thuốc</h1>
+<p class="sub">Khí dung và truyền dịch: nhập số liệu, xem kết quả ngay.</p>
+
+<div class="tabs" role="tablist">
+  <button role="tab" id="t-neb" aria-selected="true">Khí dung</button>
+  <button role="tab" id="t-iv" aria-selected="false">Truyền dịch</button>
+</div>
+
+<section class="card" id="p-neb">
+  <h2>Lọ thuốc</h2>
+  <div class="grid">
+    <div class="f"><label for="vl-vol">Thể tích trong lọ (ml)</label><input id="vl-vol" type="number" inputmode="decimal" min="0" step="0.1" value="20"></div>
+    <div class="f"><label for="vl-df">Số giọt trong 1 ml</label><input id="vl-df" type="number" inputmode="decimal" min="1" value="20"></div>
+    <div class="f"><label for="vl-ml">Liều mỗi lần: ml</label><input id="vl-ml" type="number" inputmode="decimal" min="0" step="0.1" value="0"></div>
+    <div class="f"><label for="vl-drops">Liều mỗi lần: giọt</label><input id="vl-drops" type="number" inputmode="decimal" min="0" value="20"></div>
+  </div>
+  <div class="hint">Thể tích: tổng ml ghi trên lọ, hoặc lượng còn lại nếu đã dùng. Số giọt/ml thường khoảng 20, xem tờ hướng dẫn. Liều = ml + giọt (nhập 0 ở ô không dùng).</div>
+
+  <h2>Số lần dùng</h2>
+  <div class="grid">
+    <div class="f"><label for="vl-day">Số lần phun mỗi ngày</label><input id="vl-day" type="number" inputmode="numeric" min="0" value="3"></div>
+    <div class="f"><label for="vl-days">Tổng số ngày dùng thuốc</label><input id="vl-days" type="number" inputmode="numeric" min="0" value="30"></div>
+    <div class="f"><label for="vl-total">Hoặc tổng số lần phun</label><input id="vl-total" type="number" inputmode="numeric" min="0"  placeholder="Để trống nếu tính theo ngày"></div>
+  </div>
+  <div class="hint">Nhập tổng số lần phun nếu đã biết, công cụ dùng số này thay cho số ngày và ngày cấp cứu.</div>
+
+  <button type="button" class="ghost" id="rg-toggle">+ Chọn theo khoảng ngày (nếu cần)</button>
+  <div id="rg-box" hidden>
+    <div class="row" style="margin-top:8px">
+      <input id="vl-from" type="date" aria-label="Từ ngày">
+      <input id="vl-to" type="date" aria-label="Đến ngày">
+    </div>
+    <div class="hint">Từ ngày – đến ngày, tính cả hai ngày đầu và cuối. Khi chọn đủ hai ngày, công cụ dùng khoảng này thay cho tổng số ngày.</div>
+  </div>
+
+  <label>Ngày cấp cứu</label>
+  <div id="em-list"></div>
+  <button type="button" class="ghost" id="em-add">+ Thêm ngày cấp cứu</button>
+  <div class="hint">Chọn từng ngày cấp cứu (ô trái) và số lần phun của ngày đó (ô phải). Nếu đã chọn khoảng ngày, ngày nằm ngoài khoảng không được tính.</div>
+
+  <div class="result" id="vl-out" style="margin-top:16px"></div>
+</section>
+
+<section class="card" id="p-iv" hidden>
+  <div class="grid g2">
+    <div class="f wide"><label for="iv-mode">Bạn muốn tính gì?</label>
+      <select id="iv-mode">
+        <option value="time">Tính thời gian truyền (biết tốc độ)</option>
+        <option value="rate">Tính tốc độ giọt (biết thời gian)</option>
+      </select></div>
+    <div class="f"><label for="iv-vol">Thể tích dịch (ml)</label>
+      <input id="iv-vol" type="number" inputmode="decimal" min="0" value="500"></div>
+    <div class="f"><label for="iv-df">Hệ số giọt của bộ dây</label>
+      <select id="iv-df">
+        <option value="10">10 giọt/ml</option>
+        <option value="15">15 giọt/ml</option>
+        <option value="20" selected>20 giọt/ml</option>
+        <option value="60">60 giọt/ml (vi giọt)</option>
+      </select></div>
+    <div class="f" id="iv-time-in"><label for="iv-rate">Tốc độ truyền</label>
+      <div class="row">
+        <input id="iv-rate" type="number" inputmode="decimal" min="0" value="30">
+        <select id="iv-unit" aria-label="Đơn vị"><option value="dpm">giọt/phút</option><option value="mlh">ml/giờ</option></select>
+      </div></div>
+    <div class="f" id="iv-rate-in" hidden><label for="iv-h">Thời gian truyền mong muốn</label>
+      <div class="row">
+        <input id="iv-h" type="number" inputmode="numeric" min="0" value="8" placeholder="giờ" aria-label="Giờ">
+        <input id="iv-m" type="number" inputmode="numeric" min="0" max="59" value="0" placeholder="phút" aria-label="Phút">
+      </div></div>
+    <div class="f"><label for="iv-start">Giờ bắt đầu</label>
+      <input id="iv-start" type="datetime-local"></div>
+  </div>
+  <div class="hint">Hệ số giọt xem trên vỏ bao bì bộ dây truyền, phổ biến nhất là 20 giọt/ml. Thời gian truyền nhập theo giờ và phút.</div>
+  <div class="result" id="iv-out" style="margin-top:16px"></div>
+</section>
+
+
+
+<div class="note">Kết quả chỉ để tham khảo. Tốc độ và thời gian dùng thuốc phải theo chỉ định của bác sĩ hoặc điều dưỡng; luôn theo dõi người bệnh trong khi truyền.</div>
+</main>
+
+<\script>
+const $=id=>document.getElementById(id);
+function nowLocal(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
+$('iv-start').value=nowLocal();
+const r1=n=>Math.round(n*10)/10;
+function dur(min){const t=Math.round(min*60);const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;
+  if(h>0)return h+' giờ '+m+' phút';
+  if(m>0&&s>0&&min<10)return m+' phút '+s+' giây';
+  return m+' phút'+(h===0&&m===0?' '+s+' giây':'')}
+function endAt(startStr,min){if(!startStr)return '—';const d=new Date(startStr);d.setSeconds(d.getSeconds()+Math.round(min*60));
+  return d.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})}
+function box(big,label,rows){return '<div class="res-label">'+label+'</div><div class="big">'+big+'</div><dl>'+rows.map(r=>'<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>').join('')+'</dl>'}
+
+function calcIV(){
+  const out=$('iv-out'),V=+$('iv-vol').value,df=+$('iv-df').value,mode=$('iv-mode').value;
+  $('iv-time-in').hidden=mode!=='time';$('iv-rate-in').hidden=mode!=='rate';
+  let mlh,dpm,min;
+  if(!(V>0)){out.innerHTML='<span class="err">Nhập thể tích dịch lớn hơn 0.</span>';return}
+  if(mode==='time'){
+    const r=+$('iv-rate').value;
+    if(!(r>0)){out.innerHTML='<span class="err">Nhập tốc độ lớn hơn 0.</span>';return}
+    if($('iv-unit').value==='dpm'){dpm=r;mlh=r*60/df}else{mlh=r;dpm=r*df/60}
+    min=V/mlh*60;
+  }else{
+    min=(+$('iv-h').value||0)*60+(+$('iv-m').value||0);
+    if(!(min>0)){out.innerHTML='<span class="err">Nhập thời gian truyền lớn hơn 0.</span>';return}
+    mlh=V/(min/60);dpm=V*df/min;
+  }
+  const rows=[['Tốc độ',r1(mlh)+' ml/giờ'],['Cách 1 giọt',r1(60/dpm)+' giây'],['Giờ kết thúc',endAt($('iv-start').value,min)]];
+  out.innerHTML=mode==='time'
+    ? box(dur(min),'Thời gian truyền',[['Tốc độ giọt',r1(dpm)+' giọt/phút'],...rows])
+    : box(Math.round(dpm)+' giọt/phút','Chỉnh dây truyền về',[['Thời gian',dur(min)],...rows]);
+}
+const r2=n=>Math.round(n*100)/100;
+function calcNB(){
+  const vo=$('vl-out'),T=+$('vl-vol').value,k=+$('vl-df').value,ml=+$('vl-ml').value||0,dr=+$('vl-drops').value||0,per=+$('vl-day').value||0;
+  const drug=ml+dr/(k||1);
+  if(!(T>0)||!(k>0)||!(drug>0)){vo.innerHTML='<span class="err">Nhập thể tích lọ, số giọt/ml và liều mỗi lần lớn hơn 0.</span>';return}
+  const n=Math.floor(T/drug+1e-9),left=Math.max(T-n*drug,0);
+  const rows=[['Thuốc mỗi lần',r2(drug)+' ml (~'+Math.round(drug*k)+' giọt)'],['Thuốc còn dư trong lọ',r2(left)+' ml (~'+Math.round(left*k)+' giọt)']];
+  if(per>0)rows.push(['Dùng được khoảng',r1(n/per)+' ngày']);
+  let big=n+' lần phun',lab='Lọ thuốc dùng được';
+  const f=$('vl-from').value,t=$('vl-to').value,totIn=+$('vl-total').value||0;
+  if(totIn>0){
+    if(n<1)rows.push(['Lưu ý','Liều mỗi lần lớn hơn thể tích lọ']);
+    else{const vials=Math.ceil(totIn/n);big=vials+' lọ';lab='Số lọ cần dùng cho '+totIn+' lần phun';
+      rows.unshift(['Tổng số lần phun',totIn+' lần'],['Tổng thuốc dùng',r2(totIn*drug)+' ml']);}
+  }else if(per>0){
+    const useR=!!(f&&t),days=useR?Math.round((new Date(t)-new Date(f))/864e5)+1:Math.floor(+$('vl-days').value||0);
+    if(useR&&days>=1)$('vl-days').value=days;
+    if(days<1)rows.push(['Số ngày',useR?'Ngày kết thúc trước ngày bắt đầu':'Nhập tổng số ngày lớn hơn 0']);
+    else if(n<1)rows.push(['Lưu ý','Liều mỗi lần lớn hơn thể tích lọ']);
+    else{const m=new Map();document.querySelectorAll('.em-row').forEach(r=>{const d=r.querySelector('.em-date').value;if(d&&(!useR||(d>=f&&d<=t)))m.set(d,+r.querySelector('.em-n').value||0)});
+      const em=m.size,emS=[...m.values()].reduce((a,b)=>a+b,0),tot=Math.max(days-em,0)*per+emS,vials=Math.ceil(tot/n);
+      big=vials+' lọ';lab='Số lọ đã dùng trong '+days+' ngày';
+      rows.unshift(['Số ngày',days+' ngày'],...(em>0?[['Ngày cấp cứu',em+' ngày, '+emS+' lần phun']]:[]),['Tổng số lần phun',tot+' lần'],['Tổng thuốc dùng',r2(tot*drug)+' ml']);}
+  }
+  vo.innerHTML=box(big,lab,rows);
+}
+['iv-mode','iv-vol','iv-df','iv-rate','iv-unit','iv-h','iv-m','iv-start'].forEach(i=>$(i).addEventListener('input',calcIV));
+['vl-vol','vl-df','vl-ml','vl-drops','vl-total','vl-day','vl-days','vl-from','vl-to'].forEach(i=>$(i).addEventListener('input',calcNB));
+function tab(w){const iv=w==='iv';$('p-iv').hidden=!iv;$('p-neb').hidden=iv;
+  $('t-iv').setAttribute('aria-selected',iv);$('t-neb').setAttribute('aria-selected',!iv)}
+$('t-iv').onclick=()=>tab('iv');$('t-neb').onclick=()=>tab('neb');
+function addEm(v){const r=document.createElement('div');r.className='row em-row';
+  r.innerHTML='<input type="date" class="em-date" aria-label="Ngày cấp cứu"><input type="number" class="em-n" min="0" value="6" inputmode="numeric" aria-label="Số lần phun ngày này"><button type="button" class="rm" aria-label="Xóa ngày">✕</button>';
+  r.querySelector('.em-date').value=v||'';r.querySelectorAll('input').forEach(i=>i.addEventListener('input',calcNB));
+  r.querySelector('.rm').onclick=()=>{r.remove();calcNB()};$('em-list').appendChild(r)}
+$('em-add').onclick=()=>{addEm($('vl-from').value);calcNB()};
+$('rg-toggle').onclick=()=>{const b=$('rg-box'),h=!b.hidden;b.hidden=h;if(h){$('vl-from').value=$('vl-to').value=''}$('rg-toggle').textContent=h?'+ Chọn theo khoảng ngày (nếu cần)':'− Bỏ khoảng ngày';calcNB()};
+calcIV();calcNB();
+<\/script>
+</body>
+</html>
+</script>
 <script>
 /* ================= ĐĂNG KÝ MODULE =================
    Muốn thêm thông tư mới: thêm 1 object vào MODULES.
@@ -3678,6 +3894,8 @@ Object.assign(MODULES.find(m=>m.id==='tt51'),{download:{src:'tt51-docx',filename
  ['rass','RASS','Kích động - An thần (RASS)','Đánh giá mức độ kích động và an thần.']
 ].forEach((s,i)=>MODULES.push({id:s[0],type:'embed',group:'Thang điểm lâm sàng',badge:s[1],title:s[2],desc:s[3],src:'scales-src',only:i}));
 
+MODULES.push({id:'thuoc',type:'embed',group:'Công cụ tính',badge:'Công cụ',title:'Tính thời gian khí dung & truyền dịch',desc:'Khí dung: số lần phun, số lọ theo ngày và ngày cấp cứu. Truyền dịch: thời gian truyền, giọt/phút, giờ kết thúc.',src:'thuoc-src'});
+
 /* ================= HIỂN THỊ ================= */
 const app = document.getElementById('app');
 const esc = s => s;
@@ -3695,18 +3913,25 @@ function home(){
   const by = {};
   MODULES.forEach(m => (by[m.group||'Thông tư & hướng dẫn'] = by[m.group||'Thông tư & hướng dẫn'] || []).push(m));
   let html = '<input id="hf" class="hf" type="search" placeholder="Tìm module… (VD: glasgow, đau, lao, phản vệ)">';
+  const SIDE=['Thang điểm lâm sàng','Công cụ tính'],side={};
   for(const [g,ms] of Object.entries(by)){
+    const keep=html;
     if(g==='Thang điểm lâm sàng'){
       const used = SUBS.flatMap(s=>s[1]), rest = ms.filter(x=>!used.includes(x.id)).map(x=>x.id);
       const subs = rest.length ? SUBS.concat([['Khác',rest]]) : SUBS;
-      html += `<h2 class="gh">${g}</h2><div class="subs">` + subs.map(([n,ids])=>`<section class="sub"><div class="sh">${n}</div>${ids.map(id=>tile(ms.find(x=>x.id===id))).join('')}</section>`).join('') + '</div>';
-    } else html += `<h2 class="gh">${g}</h2><div class="grid">${ms.map(card).join('')}</div>`;
+      html += `<details class="grp"><summary class="gh">${g}</summary><div class="subs">` + subs.map(([n,ids])=>`<section class="sub"><div class="sh">${n}</div>${ids.map(id=>tile(ms.find(x=>x.id===id))).join('')}</section>`).join('') + '</div></details>';
+    } else html += `<details class="grp"><summary class="gh">${g}</summary><div class="grid">${ms.map(card).join('')}</div></details>`;
+    if(SIDE.includes(g)){side[g]=html.slice(keep.length);html=keep;}
   }
+  html += '<div class="cols">'+SIDE.map(g=>side[g]?`<div>${side[g]}</div>`:'').join('')+'</div>';
   app.innerHTML = html;
   document.getElementById('hf').oninput = e => {
+    const q = e.target.value.trim();
+    document.querySelectorAll('.grp').forEach(d => d.open = !!q);
     const t = toks(e.target.value);
     document.querySelectorAll('[data-n]').forEach(el => el.style.display = t.every(x=>el.dataset.n.includes(x)) ? '' : 'none');
     document.querySelectorAll('.sub').forEach(s => s.style.display = [...s.querySelectorAll('[data-n]')].some(x=>x.style.display!=='none') ? '' : 'none');
+    document.querySelectorAll('.grp').forEach(d => d.style.display = [...d.querySelectorAll('[data-n]')].some(x=>x.style.display!=='none') ? '' : 'none');
   };
 }
 async function dlDoc(id){
