@@ -3564,7 +3564,7 @@ h2:first-child{margin-top:0}
 <section class="card" id="p-neb">
   <h2>Lọ thuốc</h2>
   <div class="grid">
-    <div class="f wide"><label for="nb-drug">Chọn thuốc</label><select id="nb-drug"><option value="berodual" selected>Berodual 20 ml (20 giọt/ml, 3 cữ/ngày)</option><option value="custom">Thuốc khác (tự nhập)</option></select></div>
+    <div class="f wide"><label for="nb-drug">Chọn thuốc</label><select id="nb-drug"><option value="berodual" selected>Berodual 20 ml (20 giọt/ml, 4 cữ/ngày)</option><option value="custom">Thuốc khác (tự nhập)</option></select></div>
     <div class="f"><label for="vl-vol">Thể tích trong lọ (ml)</label><input id="vl-vol" type="number" inputmode="decimal" min="0" step="0.1" value="20"></div>
     <div class="f"><label for="vl-df">Số giọt trong 1 ml</label><input id="vl-df" type="number" inputmode="decimal" min="1" value="20"></div>
     <div class="f"><label for="vl-ml">Liều mỗi lần: ml</label><input id="vl-ml" type="number" inputmode="decimal" min="0" step="0.1" value="0"></div>
@@ -3574,7 +3574,7 @@ h2:first-child{margin-top:0}
 
   <h2>Số lần dùng</h2>
   <div class="grid">
-    <div class="f"><label for="vl-day">Số lần phun mỗi ngày</label><input id="vl-day" type="number" inputmode="numeric" min="0" value="3"></div>
+    <div class="f"><label for="vl-day">Số lần phun mỗi ngày</label><input id="vl-day" type="number" inputmode="numeric" min="0" value="4"></div>
     <div class="f"><label for="vl-days">Tổng số ngày dùng thuốc</label><input id="vl-days" type="number" inputmode="numeric" min="0" value="30"></div>
     <div class="f"><label for="vl-total">Hoặc tổng số lần phun</label><input id="vl-total" type="number" inputmode="numeric" min="0"  placeholder="Để trống nếu tính theo ngày"></div>
   </div>
@@ -3705,7 +3705,7 @@ function addEm(v){const r=document.createElement('div');r.className='row em-row'
   r.querySelector('.rm').onclick=()=>{r.remove();calcNB()};$('em-list').appendChild(r)}
 $('em-add').onclick=()=>{addEm($('vl-from').value);calcNB()};
 $('rg-toggle').onclick=()=>{const b=$('rg-box'),h=!b.hidden;b.hidden=h;if(h){$('vl-from').value=$('vl-to').value=''}$('rg-toggle').textContent=h?'+ Chọn theo khoảng ngày (nếu cần)':'− Bỏ khoảng ngày';calcNB()};
-const DRUGS={berodual:{vol:20,df:20,day:3},custom:null};
+const DRUGS={berodual:{vol:20,df:20,day:4},custom:null};
 $('nb-drug').addEventListener('change',()=>{const d=DRUGS[$('nb-drug').value];if(d){$('vl-vol').value=d.vol;$('vl-df').value=d.df;$('vl-day').value=d.day}calcNB()});
 calcIV();calcNB();
 <\/script>
